@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: notes-bot
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
+    plan: free
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: PYTHONPATH
+        value: "."
+      - key: PORT
+        value: "8000"
