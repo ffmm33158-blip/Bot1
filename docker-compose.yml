@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  notes-bot:
+    build: .
+    container_name: notes-bot
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - PORT=8000
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    networks:
+      - notes-network
+
+networks:
+  notes-network:
+    driver: bridge
+
+volumes:
+  data:
+  logs:
