@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  notes-bot:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    volumes:
+      - ./notes_data.json:/app/notes_data.json
+    restart: unless-stopped
