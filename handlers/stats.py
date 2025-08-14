@@ -1,23 +1,29 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from data_store import DataStore
+from keyboards import get_main_menu_keyboard
 
-async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE, store: DataStore) -> None:
-    user_id = str(update.effective_user.id)
-    notes = store.get_user_notes(user_id)
-    
-    total_notes = len(notes)
-    red_priority = len([n for n in notes if n["priority"] == "red"])
-    yellow_priority = len([n for n in notes if n["priority"] == "yellow"])
-    green_priority = len([n for n in notes if n["priority"] == "green"])
-    
-    stats_text = f"""
-📊 إحصائياتك:
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    welcome_text = f"""
+مرحباً {user.first_name}! 👋
 
-📝 إجمالي الملاحظات: {total_notes}
-�� أولوية عالية: {red_priority}
-🟡 أولوية متوسطة: {yellow_priority}
-🟢 أولوية منخفضة: {green_priority}
+أنا بوت تنظيم الملاحظات الخاص بك 📝
+يمكنني مساعدتك في:
+• 📝 إضافة ملاحظات جديدة
+• 🗂️ تنظيم ملاحظاتك
+• ⏰ إعداد تذكيرات
+• البحث في الملاحظات
+
+اضغط على "القائمة الرئيسية" للبدء!
 """
     
-    await update.message.reply_text(stats_text)
+    await update.message.reply_text(
+        welcome_text,
+        reply_markup=get_main_menu_keyboard()
+    )
+
+async def menu_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(
+        "القائمة الرئيسية:",
+        reply_markup=get_main_menu_keyboard()
+    )
