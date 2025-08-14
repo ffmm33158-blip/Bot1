@@ -19,9 +19,9 @@ async def backup_command(update: Update, context: ContextTypes.DEFAULT_TYPE, sto
     }
     
     backup_text = f"""
-�� النسخ الاحتياطي:
+ النسخ الاحتياطي:
 
-�� تاريخ النسخ: {backup_data['backup_date']}
+ تاريخ النسخ: {backup_data['backup_date']}
 📝 عدد الملاحظات: {backup_data['total_notes']}
 📋 الملاحظات:
 """
