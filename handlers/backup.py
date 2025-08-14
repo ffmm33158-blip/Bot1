@@ -1,7 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from data_store import DataStore
-import json
 
 async def backup_command(update: Update, context: ContextTypes.DEFAULT_TYPE, store: DataStore) -> None:
     user_id = str(update.effective_user.id)
@@ -11,18 +10,11 @@ async def backup_command(update: Update, context: ContextTypes.DEFAULT_TYPE, sto
         await update.message.reply_text("لا توجد ملاحظات للنسخ الاحتياطي!")
         return
     
-    backup_data = {
-        "user_id": user_id,
-        "backup_date": "2025-08-14",
-        "total_notes": len(notes),
-        "notes": notes
-    }
-    
     backup_text = f"""
- النسخ الاحتياطي:
+�� النسخ الاحتياطي:
 
- تاريخ النسخ: {backup_data['backup_date']}
-📝 عدد الملاحظات: {backup_data['total_notes']}
+📅 تاريخ النسخ: {datetime.now().strftime('%Y-%m-%d')}
+📝 عدد الملاحظات: {len(notes)}
 📋 الملاحظات:
 """
     
