@@ -1,29 +1,25 @@
 import json
 import os
 from typing import Dict, List, Optional, Any
-from filelock import FileLock
 from datetime import datetime
 
 class DataStore:
     def __init__(self, filename: str = "data.json"):
         self.filename = filename
-        self.lock = FileLock(f"{filename}.lock")
         
     def _read(self) -> Dict[str, Any]:
         if not os.path.exists(self.filename):
             return {"users": {}}
         
-        with self.lock:
-            try:
-                with open(self.filename, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except:
-                return {"users": {}}
+        try:
+            with open(self.filename, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return {"users": {}}
     
     def _write(self, data: Dict[str, Any]) -> None:
-        with self.lock:
-            with open(self.filename, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+        with open(self.filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
     
     def add_user(self, user_id: str) -> None:
         data = self._read()
