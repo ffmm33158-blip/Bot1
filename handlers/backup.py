@@ -1,37 +1,38 @@
 from telegram import Update
 from telegram.ext import ContextTypes
+from data_store import DataStore
+import json
 
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    welcome_text = f"""
-مرحباً {user.first_name}! 👋
+async def backup_command(update: Update, context: ContextTypes.DEFAULT_TYPE, store: DataStore) -> None:
+    user_id = str(update.effective_user.id)
+    notes = store.get_user_notes(user_id)
+    
+    if not notes:
+        await update.message.reply_text("لا توجد ملاحظات للنسخ الاحتياطي!")
+        return
+    
+    backup_data = {
+        "user_id": user_id,
+        "backup_date": "2025-08-14",
+        "total_notes": len(notes),
+        "notes": notes
+    }
+    
+    backup_text = f"""
+ النسخ الاحتياطي:
 
-أنا بوت تنظيم الملاحظات الخاص بك 📝
-يمكنني مساعدتك في:
-• 📝 إضافة ملاحظات جديدة
-• 🗂️ تنظيم ملاحظاتك
-• ⏰ إعداد تذكيرات
-• �� البحث في الملاحظات
-
-استخدم الأوامر التالية:
-/start - البداية
-/menu - القائمة
-/notes - عرض الملاحظات
-/stats - الإحصائيات
-/backup - النسخ الاحتياطي
+ تاريخ النسخ: {backup_data['backup_date']}
+📝 عدد الملاحظات: {backup_data['total_notes']}
+📋 الملاحظات:
 """
     
-    await update.message.reply_text(welcome_text)
-
-async def menu_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    menu_text = """
-📋 القائمة الرئيسية:
-
-�� /add - إضافة ملاحظة جديدة
-📋 /notes - عرض جميع الملاحظات
-�� /search - البحث في الملاحظات
-�� /stats - إحصائياتك
-�� /backup - نسخ احتياطي
-"""
+    for note in notes:
+        backup_text += f"\n🔸 {note['title']}\n   {note['text']}\n"
     
-    await update.message.reply_text(menu_text)
+    # تقسيم الرسالة إذا كانت طويلة
+    if len(backup_text) > 4000:
+        parts = [backup_text[i:i+4000] for i in range(0, len(backup_text), 4000)]
+        for i, part in enumerate(parts):
+            await update.message.reply_text(f"جزء {i+1} من {len(parts)}:\n{part}")
+    else:
+        await update.message.reply_text(backup_text)
