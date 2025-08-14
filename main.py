@@ -43,7 +43,7 @@ def send_reminder_callback(bot: Bot, store: DataStore, user_id: int, note_id: in
 def main() -> None:
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     if not token:
-        raise RuntimeError("TELEGRAM_BOT_TOKEN is required")
+        raise RuntimeError("8078959273:AAH0l8uIUAs3e0_EiWnQyLLLiH7NjRY2cFE")
 
     store = DataStore()
     updater = Updater(token=token, use_context=True)
